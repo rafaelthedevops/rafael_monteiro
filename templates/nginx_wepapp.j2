@@ -1,0 +1,11 @@
+upstream app {
+    server 127.0.0.1:3000;
+}
+
+server {
+    listen *:80
+    try_files $uri @app;
+    location @app {
+        proxy_pass http://app;
+    }
+}
