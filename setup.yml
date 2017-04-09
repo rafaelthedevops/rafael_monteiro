@@ -30,5 +30,33 @@
     - name: Install webapp requirements with pip
       pip: requirements=/home/ubuntu/requirements.txt
 
+    - name: Copy nginx site configuration
+      template:
+          src: templates/nginx_wepapp.j2
+          dest: /etc/nginx/sites-available/webapp
+      tags: configs  
+
+    - name: Enable webapp site
+      file:
+          src: /etc/nginx/sites-available/webapp
+          dest: /etc/nginx/sites-enabled/webapp
+          state: link
+      notify: restart nginx
+    
+    - name: Disable default site config
+      file: 
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+
+  handlers:
+    - name: restart nginx
+      service: 
+        name: nginx
+        state: restarted
+    - name: restart supervisor
+      service: 
+        name: supervisor
+        state: restarted
+
 
 
