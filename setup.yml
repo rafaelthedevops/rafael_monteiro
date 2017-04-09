@@ -22,3 +22,13 @@
           - python-pip
           - nginx
 
+    - name: Copy pip requirements file
+      copy: 
+        src: requirements.txt
+        dest: /home/ubuntu/requirements.txt
+
+    - name: Install webapp requirements with pip
+      pip: requirements=/home/ubuntu/requirements.txt
+
+
+
