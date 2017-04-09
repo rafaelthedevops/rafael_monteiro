@@ -3,6 +3,12 @@
   hosts: all
   become: true
   become_method: sudo 
+  gather_facts: false 
+  pre_tasks:
+      - name: Ensure that Python is installed
+        raw: test -e /usr/bin/python || (apt -y update && apt -y install python-simplejson)
+        register: output
+        changed_when: output.stdout != ""
 
   tasks: 
     - name: Install packages 
