@@ -53,6 +53,22 @@
       file: 
         path: /etc/nginx/sites-enabled/default
         state: absent
+    - name: Copy the python app
+      copy: 
+        src: simple_app.py
+        dest: "{{ work_dir }}/simple_app.py"
+
+    - name: Copy the supervisor job file
+      template: 
+        src: templates/supervisor_app.j2
+        dest: "{{ supervisor_dir }}/supervisor_app.conf"
+        owner: root
+      notify: restart supervisor 
+
+    - name: START the Job... Finally!!!
+      supervisorctl: 
+        name: "{{ app_name }}"
+        state: present 
 
   handlers:
     - name: restart nginx
