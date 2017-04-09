@@ -3,7 +3,12 @@
   hosts: all
   become: true
   become_method: sudo 
-  gather_facts: false 
+  gather_facts: false
+  vars:
+      work_dir: /home/ubuntu
+      supervisor_dir: /etc/supervisor/conf.d
+      app_name: the_simple_app
+
   pre_tasks:
       - name: Ensure that Python is installed
         raw: test -e /usr/bin/python || (apt -y update && apt -y install python-simplejson)
@@ -25,10 +30,11 @@
     - name: Copy pip requirements file
       copy: 
         src: requirements.txt
-        dest: /home/ubuntu/requirements.txt
+        dest: "{{ work_dir }}/requirements.txt"
 
     - name: Install webapp requirements with pip
-      pip: requirements=/home/ubuntu/requirements.txt
+      pip: 
+        requirements: "{{ work_dir }}/requirements.txt"
 
     - name: Copy nginx site configuration
       template:
